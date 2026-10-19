@@ -98,7 +98,7 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
               preference:
-                - matchExpressions:
+                matchExpressions:
                   - key: "app"
                     values:
                       - "todoapp"

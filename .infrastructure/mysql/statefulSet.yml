@@ -3,6 +3,8 @@ kind: StatefulSet
 metadata:
   name: mysql
   namespace: mysql
+  labels:
+    app: mysql
 spec:
   selector:
     matchLabels:
@@ -64,6 +66,31 @@ spec:
       - name: config-map
         configMap:
           name: mysql
+
+      tolerations:
+      - key: "app"
+        operator: "Equal"
+        value: "mysql"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - "mysql"
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - "mysql"
+            topologyKey: "kubernetes.io/hostname"
+
   volumeClaimTemplates:
   - metadata:
       name: data
